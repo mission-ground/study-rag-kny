@@ -10,7 +10,7 @@ from rag.ingestion.chunker import get_chunks
 from rag.vectorstores.faiss.vector_store import FAISSVectorStore
 
 def run_build_index():
-    raw_pdf_path = "data/raw/pdf/2026_policy.pdf"
+    raw_pdf_path = "data/raw/2026_policy.pdf"
     index_save_path = "rag/vectorstores/faiss/index"
 
     # 1. 데이터 추출 및 청킹
