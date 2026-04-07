@@ -25,6 +25,7 @@ class FAISSVectorStore:
 
     def load_index(self, folder_path):
         """저장된 인덱스 파일 불러오기"""
+        # allow_dangerous_deserialization=True는 로컬 파일을 믿고 열 때 필요
         self.vector_store = FAISS.load_local(
             folder_path, self.embeddings, allow_dangerous_deserialization=True
         )
