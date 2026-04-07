@@ -1,59 +1,15 @@
-from transformers import AutoTokenizer
-import unicodedata
+from langchain_text_splitters import RecursiveCharacterTextSplitter
 
-class Chunker:
-
-    def __init__(
-          self
-        , model_name="sentence-transformers/all-MiniLM-L6-v2"
-        , chunk_size=256
-        , overlap=50
-    ):
-        self.tokenizer = AutoTokenizer.from_pretrained(model_name)
-        self.chunk_size = chunk_size
-        self.overlap = overlap
-
-    def split(self, text, page):
-
-        tokens = self.tokenizer.encode( text
-                                      , add_special_tokens=False)
-
-        chunks = []
-
-        start = 0
-
-        # 사이즈는 결국 전체 문서의 길이를 의미
-        while start < len(tokens):
-
-            end = start + self.chunk_size
-
-            chunk_tokens = tokens[start:end]
-
-            # 깨짐현상 발생으로 수정
-            chunk_text = self.tokenizer.decode(  chunk_tokens
-                                               , skip_special_tokens=True
-                                               , clean_up_tokenization_spaces=True
-                                               )
-            
-            
-            chunk_text = unicodedata.normalize("NFC", chunk_text)
-            chunk_index = len(chunks) + 1
-
-            #벡터 DB에 넣을 구조화            
-            chunk_data = {
-                      "text": chunk_text
-                    , "page": page
-                    , "chunk": chunk_index
-            }
-
-            chunks.append(chunk_data)
-
-            print("\n" + "="*60)
-            print(f"CHUNK {chunk_index}")
-            print("-"*60)
-            print(chunk_text)
-            print("="*60 + "\n")
-
-            start += self.chunk_size - self.overlap
-
-        return chunks
+def get_chunks(text):
+    # 정책 자료는 한 문단이 아주 길지 않으므로 
+    # 청크 사이즈를 600~800 정도로 잡고 문맥 유지를 위해 100자 정도 겹침
+    text_splitter = RecursiveCharacterTextSplitter(
+        chunk_size=1000,
+        chunk_overlap=100,
+        length_function=len,
+        # 정책 자료의 구분자들(줄바꿈, 불렛 포인트 등)을 고려한 설정
+        separators=["\n\n", "\n", " ", ""]
+    )
+    
+    chunks = text_splitter.split_text(text)
+    return chunks
