@@ -18,5 +18,4 @@ build/
 # mac
 .DS_Store
 
-data/raw
 .env
