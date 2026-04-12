@@ -2,14 +2,15 @@ import faiss
 import numpy as np
 import pickle
 import os
+from typing import Any
 
 class ManualVectorStore:
     """
-    LangChain 프레임워크 없이 FAISS 라이브러리를 직접 제어하는 벡터 스토어 클래스
+    LangChain 프레임워크 없이 FAISS 라이브러리를 직접 제어하는 벡터 스토어 클래스입니다.
     """
     def __init__(self, dimension: int = 1536):
         # IndexFlatL2: 유클리드 거리를 기반으로 하는 가장 기본적인 FAISS 인덱스
-        self.index = faiss.IndexFlatL2(dimension)
+        self.index: Any = faiss.IndexFlatL2(dimension)
         # 벡터와 1:1로 매핑될 실제 텍스트 조각들을 저장하는 리스트
         self.chunks = []
 
